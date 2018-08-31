@@ -32,6 +32,7 @@ add_subdirectory(xcformatter)
 add_subdirectory(xcscheme)
 add_subdirectory(xcsdk)
 add_subdirectory(xcworkspace)
+add_subdirectory(repack)
 
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${OLD_DEFAULT_COMPONENT})
 
