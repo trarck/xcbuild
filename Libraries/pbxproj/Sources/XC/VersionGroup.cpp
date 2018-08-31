@@ -50,3 +50,12 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+VersionGroup::toPlist()
+{
+	auto dict = BaseGroup::toPlist();
+	dict->set("currentVersion", plist::String::New(_currentVersion->uuid()));
+	dict->set("versionGroupType", plist::String::New(_versionGroupType));
+	return dict;
+}

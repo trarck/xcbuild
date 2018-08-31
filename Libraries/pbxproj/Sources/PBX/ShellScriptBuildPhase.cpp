@@ -14,6 +14,7 @@
 #include <plist/String.h>
 #include <plist/Keys/Unpack.h>
 
+
 using pbxproj::PBX::ShellScriptBuildPhase;
 using pbxproj::Context;
 
@@ -81,4 +82,29 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
     }
 
     return true;
+}
+
+std::unique_ptr<plist::Dictionary>
+ShellScriptBuildPhase::toPlist()
+{
+	auto dict = BuildPhase::toPlist();
+
+	auto inputs = plist::Array::New();
+	for (auto it : _inputPaths) {
+		inputs->append(it.toPlist());
+	}
+
+	auto outputs = plist::Array::New();
+	for (auto it : _outputPaths) {
+		outputs->append(it.toPlist());
+	}
+
+	dict->set("name", plist::String::New(_name));
+	dict->set("shellPath", plist::String::New(_shellPath));
+	dict->set("shellScript", plist::String::New(_shellScript));
+	dict->set("inputPaths",std::move(inputs));
+	dict->set("outputPaths", std::move(outputs));
+	dict->set("showEnvVarsInLog", plist::Boolean::New(_showEnvVarsInLog));
+
+	return dict;
 }

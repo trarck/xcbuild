@@ -103,7 +103,7 @@ resolve(
     // TODO(grp): Populate generated headers.
     HeaderMap generatedFiles;
 
-    pbxproj::PBX::Project::shared_ptr project = target->project();
+    pbxproj::PbxProj::shared_ptr project = target->project();
 
     std::vector<std::string> headermapSearchPaths = HeadermapSearchPaths(_specManager, compilerEnvironment, target, toolContext->searchPaths(), toolContext->workingDirectory());
     for (std::string const &path : headermapSearchPaths) {

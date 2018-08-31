@@ -53,3 +53,10 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
     return true;
 }
 
+std::unique_ptr<plist::Dictionary> Object::toPlist(){
+
+	auto dict = plist::Dictionary::New();
+	dict->set("isa",plist::String::New(_isa));
+	return dict;
+}
+

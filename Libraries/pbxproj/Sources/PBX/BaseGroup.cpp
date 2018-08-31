@@ -99,3 +99,17 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+std::unique_ptr<plist::Dictionary>
+BaseGroup::toPlist()
+{
+	auto dict = GroupItem::toPlist();
+
+	auto children = plist::Array::New();
+
+	for (auto it : _children) {
+		children->append(plist::String::New(it->uuid()));
+	}
+
+	dict->set("children", std::move(children));
+	return dict;
+}

@@ -93,6 +93,7 @@ public:
     std::string
     raw() const;
 
+	std::unique_ptr<plist::Object> toPlist() const;
 public:
     /*
      * A value representing an empty string.

@@ -15,9 +15,13 @@
 #include <pbxproj/PBX/BuildPhase.h>
 #include <pbxproj/PBX/TargetDependency.h>
 
-namespace pbxproj { namespace PBX {
+namespace pbxproj {
 
-class Project;
+	class PbxProj;
+
+	namespace PBX {
+
+
 
 class Target : public Object {
 public:
@@ -35,7 +39,7 @@ private:
     Type                              _type;
 
 private:
-    std::weak_ptr<Project>            _project;
+    std::weak_ptr<PbxProj>            _project;
 
 private:
     std::string                       _name;
@@ -52,17 +56,23 @@ public:
     { return _type; }
 
 public:
-    inline std::shared_ptr<Project> project() const
+    inline std::shared_ptr<PbxProj> project() const
     { return _project.lock(); }
 
 public:
     inline std::string const &name() const
     { return _name; }
+	inline void setName(std::string const &name)
+	{
+		_name=name;
+	}
 
-public:
     inline std::string const &productName() const
     { return _productName; }
-
+	inline void setProductName(std::string const &productName)
+	{
+		_productName = productName;
+	}
 public:
     inline XC::ConfigurationList::shared_ptr const &buildConfigurationList() const
     { return _buildConfigurationList; }
@@ -80,6 +90,8 @@ public:
 
 protected:
     bool parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::string> *seen, bool check) override;
+public:
+	std::unique_ptr<plist::Dictionary> toPlist() override;
 };
 
 } }

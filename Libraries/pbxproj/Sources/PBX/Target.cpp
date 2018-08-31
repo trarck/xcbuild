@@ -53,7 +53,7 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
         return false;
     }
 
-    _project = context.project;
+    _project = context.pbxproj;
 
     auto unpack = plist::Keys::Unpack("Target", dict, seen);
 

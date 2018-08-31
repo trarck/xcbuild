@@ -9,6 +9,7 @@
 
 #include <pbxproj/Context.h>
 #include <pbxproj/PBX/Project.h>
+#include <pbxproj/Proj.h>
 
 using pbxproj::Context;
 namespace PBX = pbxproj::PBX;
@@ -16,13 +17,19 @@ namespace PBX = pbxproj::PBX;
 void Context::
 cacheObject(PBX::Object::shared_ptr const &O, std::string const &id)
 {
+	//TODO [dhh] remove start
     if (project == nullptr && O->isa <PBX::Project> ()) {
         project = std::static_pointer_cast <PBX::Project> (O);
     }
+	//TODO [dhh] remove end
+    O->setUuid(id);
 
-    O->setBlueprintIdentifier(id);
-
+	if (pbxproj != nullptr) {
+		pbxproj->addObject(O);
+	}
+	//TODO [dhh] remove start
     if (project != nullptr && project != O) {
         project->cacheObject(O);
     }
+	//TODO [dhh] remove end
 }

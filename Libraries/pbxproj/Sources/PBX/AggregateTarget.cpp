@@ -42,3 +42,10 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+std::unique_ptr<plist::Dictionary>
+AggregateTarget::toPlist()
+{
+	auto dict = Target::toPlist();
+	dict->set("productName", plist::String::New(_productName));
+	return dict;
+}

@@ -17,7 +17,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace plist { class Dictionary; }
+namespace plist { class Dictionary;}
 namespace pbxproj { class Context; }
 
 namespace pbxproj { namespace PBX {
@@ -65,6 +65,9 @@ private:
 
 protected:
     virtual bool parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::string> *seen, bool check);
+
+public:
+	virtual std::unique_ptr<plist::Dictionary> toPlist();
 
 public:
     template <typename T>

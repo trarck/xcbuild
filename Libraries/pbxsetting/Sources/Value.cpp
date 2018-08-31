@@ -84,6 +84,34 @@ raw() const
     return out;
 }
 
+std::unique_ptr<plist::Object> 
+Value::toPlist() {
+	if (_entries.size() == 1) {
+		return plist::String::New(*(_entries[0].string()));
+	}
+	else if(_entries.size()>1){
+		auto values = plist::Array::New();
+
+		for (Value::Entry const &entry : _entries) {
+			switch (entry.type()) {
+				case Value::Entry::Type::String: {
+					values->append(plist::String::New(*entry.string()));
+					break;
+				}
+				case Value::Entry::Type::Value: {
+					values->append(entry.value()->toPlist());
+					break;
+				}
+			}
+		}
+		return values;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 bool Value::
 operator==(Value const &rhs) const
 {

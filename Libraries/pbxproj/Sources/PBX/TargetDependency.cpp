@@ -72,3 +72,13 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+TargetDependency::toPlist()
+{
+	auto dict = Object::toPlist();
+	dict->set("name", plist::String::New(_name));
+	dict->set("targetProxy", plist::String::New(_targetProxy->uuid()));
+	dict->set("target", plist::String::New(_target->uuid()));
+	return dict;
+}

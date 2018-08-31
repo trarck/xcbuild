@@ -48,3 +48,11 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+std::unique_ptr<plist::Dictionary>
+AppleScriptBuildPhase::toPlist()
+{
+	auto dict = BuildPhase::toPlist();
+	dict->set("contextName", plist::String::New(_contextName));
+	dict->set("isSharedContext", plist::Boolean::New(_isSharedContext));
+	return dict;
+}

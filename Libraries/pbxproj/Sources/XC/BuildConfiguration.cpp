@@ -9,6 +9,9 @@
 
 #include <pbxproj/XC/BuildConfiguration.h>
 #include <pbxproj/Context.h>
+#include <pbxproj/Context.h>
+#include <plist/Array.h>
+#include <pbxsetting/Value.h>
 
 using pbxproj::XC::BuildConfiguration;
 using pbxproj::Context;
@@ -66,4 +69,21 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
     }
 
     return true;
+}
+
+std::unique_ptr<plist::Dictionary>
+BuildConfiguration::toPlist()
+{
+	auto dict = Object::toPlist();
+
+	auto settingDict = plist::Dictionary::New();
+
+	for (auto it : _buildSettings.settings()) {
+		settingDict->set(it.name, std::move(it.value().toPlist()));
+	}
+
+	dict->set("baseConfigurationReference", plist::String::New(_baseConfigurationReference->uuid()));
+	dict->set("buildSettings", std::move(settingDict));
+	dict->set("name", plist::String::New(_name));
+	return dict;
 }

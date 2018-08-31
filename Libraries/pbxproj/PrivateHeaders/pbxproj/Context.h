@@ -60,12 +60,19 @@ class VersionGroup;
 
 }
 
+class PbxProj;
+
 class Context {
 public:
     //
     // Parsing context
     //
     plist::Dictionary const *objects;
+
+	//
+	// The pbxproj
+	//
+	std::shared_ptr<PbxProj> pbxproj;
 
     //
     // The main project
@@ -103,11 +110,13 @@ public:
 public:
     Context()
     {
+		pbxproj = nullptr;
         project = nullptr;
     }
 
     inline void clear()
     {
+		pbxproj = nullptr;
         project = nullptr;
         projects.clear();
         fileReferences.clear();

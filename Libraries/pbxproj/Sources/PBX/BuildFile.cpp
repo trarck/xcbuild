@@ -93,3 +93,11 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary> 
+BuildFile::toPlist()
+{
+	auto dict = Object::toPlist();
+	dict->set("fileRef", plist::String::New(_fileRef->uuid()));
+	return dict;
+}
