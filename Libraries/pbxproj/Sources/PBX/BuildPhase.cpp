@@ -74,3 +74,20 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+BuildPhase::toPlist()
+{
+	auto dict = Object::toPlist();
+	auto fileIds = plist::Array::New();
+	for (auto it : _files) {
+		fileIds->append(plist::String::New(it->uuid()));
+	}
+
+	dict->set("name", plist::String::New(_name));
+	dict->set("files",std::move(fileIds));
+	dict->set("runOnlyForDeploymentPostprocessing", plist::String::New(_name));
+	dict->set("buildActionMask", plist::String::New(_name));
+
+	return dict;
+}
