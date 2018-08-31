@@ -21,6 +21,13 @@ Object(std::string const &isa) :
 {
 }
 
+Object::
+Object(std::string const &isa,std::string const& uuid) :
+	_isa(isa),
+	_uuid(uuid)
+{
+}
+
 bool Object::
 parseObject(Context &context, plist::Dictionary const *dict)
 {

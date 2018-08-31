@@ -54,6 +54,7 @@ private:
     std::string                        _projectRoot;
     std::vector<ProjectReference>      _projectReferences;
     Target::vector                     _targets;
+	std::unique_ptr<plist::Dictionary> _attributes;
     FileReference::vector              _fileReferences;
 
 public:

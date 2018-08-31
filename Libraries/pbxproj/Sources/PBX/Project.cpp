@@ -98,7 +98,7 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     if (A != nullptr) {
         // TODO(grp): Handle attributes.
-        (void)A;
+		_attributes = std::move(A->copy());
     }
 
     if (CV != nullptr) {

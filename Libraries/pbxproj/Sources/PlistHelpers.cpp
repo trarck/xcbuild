@@ -12,6 +12,8 @@
 #include <plist/String.h>
 #include <plist/Keys/Unpack.h>
 
+#include <random>
+
 namespace pbxproj {
 
 plist::Dictionary const *
@@ -48,6 +50,23 @@ PlistDictionaryGetIndirectPBXObject(plist::Dictionary const *objects,
         *id = ID->value();
     }
     return PlistDictionaryGetPBXObject(objects, ID->value(), isa);
+}
+
+std::string GenUUID() {
+	char buff[24] = { 0 };
+	unsigned char c;
+	std::random_device device;
+	std::uniform_int_distribution<int> distribution = std::uniform_int_distribution<int>(0, 15);
+	for (size_t i = 0; i < 24; i++) {
+		c = distribution(device);
+		if (c>9) {
+			buff[i] = c + 'A';
+		}
+		else {
+			buff[i] = c + '0';
+		}
+	}
+	return std::string(buff, 24);
 }
 
 }

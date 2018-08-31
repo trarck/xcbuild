@@ -29,20 +29,31 @@ public:
 
 private:
     std::string _isa;
-    std::string _blueprintIdentifier;
-
+    //std::string _blueprintIdentifier;
+	std::string _uuid;
 protected:
     Object(std::string const &isa);
+	Object(std::string const &isa, std::string const &uuid);
 
 public:
     inline std::string const &blueprintIdentifier() const
-    { return _blueprintIdentifier; }
+    { return _uuid; }
     inline void setBlueprintIdentifier(std::string const &identifier)
-    { _blueprintIdentifier = identifier; }
+    { _uuid = identifier; }
+	inline std::string const &uuid() const
+	{
+		return _uuid;
+	}
 
+	inline void setUuid(std::string const &uuid)
+	{
+		_uuid = uuid;
+	}
 public:
     inline std::string const &isa() const
     { return _isa; }
+
+
 
 public:
     virtual inline bool isa(std::string const &isa) const

@@ -28,6 +28,7 @@ PlistDictionaryGetIndirectPBXObject(plist::Dictionary const *objects,
                                     std::string const &key,
                                     std::string const &isa,
                                     std::string *id);
+std::string GenUUID();
 
 }
 
