@@ -66,6 +66,19 @@ public:
 		return _basePath;
 	}
 
+	inline uint32_t const &archiveVersion() const
+	{
+		return _archiveVersion;
+	}
+	inline uint32_t const &objectVersion() const
+	{
+		return _objectVersion;
+	}
+
+	inline std::shared_ptr<PBX::Project> const &rootObject() const
+	{
+		return _rootObject;
+	}
 public:
 	std::string sourceRoot() const;
 protected:

@@ -68,7 +68,8 @@ protected:
 
 public:
 	virtual std::unique_ptr<plist::Dictionary> toPlist();
-
+public:
+	virtual std::string annotation();
 public:
     template <typename T>
     inline bool isa() const

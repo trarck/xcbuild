@@ -60,3 +60,7 @@ std::unique_ptr<plist::Dictionary> Object::toPlist(){
 	return dict;
 }
 
+std::string Object::annotation()
+{
+	return "";
+}

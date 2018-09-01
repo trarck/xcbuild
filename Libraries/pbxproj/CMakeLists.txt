@@ -12,6 +12,7 @@ add_library(pbxproj
             Sources/ISA.cpp
             Sources/PlistHelpers.cpp
 			Sources/Proj.cpp
+            Sources/PbxWriter.cpp
             Sources/PBX/AggregateTarget.cpp
             Sources/PBX/AppleScriptBuildPhase.cpp
             Sources/PBX/BaseGroup.cpp
