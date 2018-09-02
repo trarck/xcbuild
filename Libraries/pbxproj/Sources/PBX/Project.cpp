@@ -352,3 +352,10 @@ parse(Context &context, plist::Dictionary const *dict)
     return true;
 }
 
+std::unique_ptr<plist::Dictionary>
+Project::toPlist()
+{
+	auto dict = Object::toPlist();
+	dict->set("fileRef", plist::String::New(_fileRef->uuid()));
+	return dict;
+}

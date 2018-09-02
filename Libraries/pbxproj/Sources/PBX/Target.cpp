@@ -171,3 +171,29 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+Target::toPlist()
+{
+	auto dict = Object::toPlist();
+
+	auto phases = plist::Array::New();
+
+	for (auto it : _buildPhases) {
+		phases->append(plist::String::New(it->uuid() + it->wrapAnnotation()));
+
+	}
+
+	auto deps = plist::Array::New();
+
+	for (auto it : _dependencies) {
+		deps->append(plist::String::New(it->uuid() + it->wrapAnnotation()));
+	}
+
+	dict->set("name", plist::String::New(_name));
+	dict->set("productName", plist::String::New(_productName));
+	dict->set("buildConfigurationList", plist::String::New(_buildConfigurationList->uuid()+ _buildConfigurationList->wrapAnnotation()));
+	dict->set("buildPhases", std::move(phases));
+	dict->set("dependencies", std::move(deps));
+	return dict;
+}

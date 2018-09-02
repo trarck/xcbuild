@@ -50,3 +50,12 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+ReferenceProxy::toPlist()
+{
+	auto dict = GroupItem::toPlist();
+	dict->set("remoteRef", plist::String::New(_remoteRef->uuid()+_remoteRef->wrapAnnotation());
+	dict->set("fileType", plist::String::New(_fileType));
+	return dict;
+}
