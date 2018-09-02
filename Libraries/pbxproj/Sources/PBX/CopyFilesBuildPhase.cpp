@@ -50,3 +50,13 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary> CopyFilesBuildPhase::toPlist()
+{
+	auto dict = BuildPhase::toPlist();
+
+	dict->set("dstPath", _dstPath.toPlist());
+	dict->set("dstSubfolderSpec", plist::Integer::New(_dstSubfolderSpec));
+
+	return dict;
+}

@@ -60,3 +60,14 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+LegacyTarget::toPlist()
+{
+	auto dict = Target::toPlist();
+	dict->set("buildWorkingDirectory", plist::String::New(_buildWorkingDirectory));
+	dict->set("buildToolPath", plist::String::New(_buildToolPath));
+	dict->set("buildArgumentsString", _buildArgumentsString.toPlist());
+	dict->set("passBuildSettingsInEnvironment", plist::Integer::New(_passBuildSettingsInEnvironment));
+	return dict;
+}

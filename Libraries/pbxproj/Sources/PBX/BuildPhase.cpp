@@ -58,7 +58,7 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
                 auto BF = context.parseObject(context.buildFiles, FID, F);
                 if (!BF)
                     return false;
-
+				BF->setParent(std::make_shared<Object>(this));
                 _files.push_back(BF);
             }
         }
@@ -81,7 +81,7 @@ BuildPhase::toPlist()
 	auto dict = Object::toPlist();
 	auto fileIds = plist::Array::New();
 	for (auto it : _files) {
-		fileIds->append(plist::String::New(it->uuid()));
+		fileIds->append(plist::String::New(it->uuid()+it->wrapAnnotation()));
 	}
 
 	dict->set("name", plist::String::New(_name));

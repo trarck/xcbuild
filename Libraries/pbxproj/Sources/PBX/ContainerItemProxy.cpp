@@ -66,3 +66,14 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary> ContainerItemProxy::toPlist()
+{
+	auto dict = Object::toPlist();
+
+	dict->set("proxyType", plist::Integer::New(_proxyType));
+	dict->set("remoteGlobalIDString", plist::String::New(_remoteGlobalIDString));
+	dict->set("remoteInfo", plist::String::New(_remoteInfo));
+
+	return dict;
+}

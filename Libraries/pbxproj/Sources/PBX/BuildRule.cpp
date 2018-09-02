@@ -73,3 +73,21 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary> BuildRule::toPlist()
+{
+	auto dict = Object::toPlist();
+	auto outputs = plist::Array::New();
+	for (auto it : _outputFiles) {
+		outputs->append(plist::String::New(it));
+	}
+
+	dict->set("compilerSpec", plist::String::New(_compilerSpec));
+	dict->set("filePatterns", plist::String::New(_filePatterns));
+	dict->set("fileType", plist::String::New(_fileType));
+	dict->set("isEditable", plist::Boolean::New(_isEditable));
+	dict->set("outputFiles", std::move(outputs));
+	dict->set("script", plist::String::New(_script));
+
+	return dict;
+}

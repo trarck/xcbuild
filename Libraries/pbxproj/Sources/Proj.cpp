@@ -215,6 +215,22 @@ namespace pbxproj {
 		return a->uuid() > b->uuid();
 	}
 
+	std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> PbxProj::getObjectsGroupByISA()
+	{
+		std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> groups;
+
+		for (auto it : _objects) {
+			groups[it.second->isa()].push_back(it.second);
+		}
+
+		//sort group
+		for (auto it : groups) {
+			std::sort(it.second.begin(), it.second.end(), ObjectComp);
+		}
+		
+		return groups;
+	}
+
 	bool PbxProj::save() {
 		std::vector<uint8_t> content;
 		std::string head = UTF8Head;

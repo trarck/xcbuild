@@ -75,3 +75,22 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+
+std::unique_ptr<plist::Dictionary>
+NativeTarget::toPlist()
+{
+	auto dict = Target::toPlist();
+
+	auto rules = plist::Array::New();
+
+	for (auto it : _buildRules) {
+		rules->append(plist::String::New(it->uuid() + it->wrapAnnotation()));
+	}
+
+	dict->set("productType", plist::String::New(_productType));
+	dict->set("productInstallPath", plist::String::New(_productInstallPath));
+	dict->set("buildRules", std::move(rules));
+	
+	return dict;
+}

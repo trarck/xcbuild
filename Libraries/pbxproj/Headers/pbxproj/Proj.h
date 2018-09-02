@@ -92,6 +92,8 @@ public:
 	{
 		return _fileReferences;
 	}
+
+	std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> getObjectsGroupByISA() const;                           
 public:
 	inline PBX::Object::shared_ptr resolveBuildableReference(std::string const &uuid) const
 	{
@@ -110,6 +112,6 @@ protected:
 	bool parse(Context &context,plist::Dictionary const *dict,const std::string& projectFileName);
 };
 
-}
+}           
 
 #endif  // !__pbxproj_Proj_h

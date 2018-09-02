@@ -87,3 +87,14 @@ BuildConfiguration::toPlist()
 	dict->set("name", plist::String::New(_name));
 	return dict;
 }
+
+std::string BuildConfiguration::displayName()
+{
+	if (_name.empty()) {
+		return isa();
+	}
+	else
+	{
+		return _name;
+	}
+}

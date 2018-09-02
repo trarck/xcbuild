@@ -76,3 +76,13 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+GroupItem::toPlist()
+{
+	auto dict = Object::toPlist();
+	dict->set("name", plist::String::New(_name));
+	dict->set("sourceTree", plist::String::New(_sourceTree));
+	dict->set("path", plist::String::New(_path));
+	return dict;
+}

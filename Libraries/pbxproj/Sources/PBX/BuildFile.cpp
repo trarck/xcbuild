@@ -101,3 +101,20 @@ BuildFile::toPlist()
 	dict->set("fileRef", plist::String::New(_fileRef->uuid()));
 	return dict;
 }
+
+std::string BuildFile::displayName()
+{
+	if (_fileRef != nullptr) {
+		return _fileRef->displayName();
+	}
+	return "";
+}
+
+std::string BuildFile::annotation()
+{
+	PBX::Object::shared_ptr p = parent();
+	if (p != nullptr) {
+		return displayName() + " in " + p->displayName();
+	}
+	return displayName() + " in null";
+}

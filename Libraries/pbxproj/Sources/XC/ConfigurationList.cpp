@@ -69,3 +69,18 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary> ConfigurationList::toPlist()
+{
+	auto dict = Object::toPlist();
+	auto buildConfs = plist::Array::New();
+	for (auto it : _buildConfigurations) {
+		buildConfs->append(plist::String::New(it->uuid()+it->wrapAnnotation()));
+	}
+
+	dict->set("defaultConfigurationName", plist::String::New(_defaultConfigurationName));
+	dict->set("defaultConfigurationIsVisible", plist::Boolean::New(_defaultConfigurationIsVisible));
+	dict->set("buildConfigurations", std::move(buildConfs));
+
+	return dict;
+}

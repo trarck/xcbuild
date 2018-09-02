@@ -49,3 +49,12 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+Group::toPlist()
+{
+	auto dict = BaseGroup::toPlist();
+	dict->set("indentWidth", plist::Integer::New(_indentWidth));
+	dict->set("tabWidth", plist::Integer::New(_tabWidth));
+	return dict;
+}

@@ -31,10 +31,12 @@ private:
     std::string _isa;
     //std::string _blueprintIdentifier;
 	std::string _uuid;
+
+	std::weak_ptr<Object> _parent;
 protected:
     Object(std::string const &isa);
 	Object(std::string const &isa, std::string const &uuid);
-
+	Object(std::string const &isa, std::string const &uuid, std::weak_ptr<Object> const &parent);
 public:
     inline std::string const &blueprintIdentifier() const
     { return _uuid; }
@@ -48,6 +50,16 @@ public:
 	inline void setUuid(std::string const &uuid)
 	{
 		_uuid = uuid;
+	}
+
+	inline const Object::shared_ptr &parent() const
+	{
+		return _parent.lock();
+	}
+
+	inline void setParent(Object::shared_ptr const & parent)
+	{
+		_parent = parent;
 	}
 public:
     inline std::string const &isa() const
@@ -68,8 +80,14 @@ protected:
 
 public:
 	virtual std::unique_ptr<plist::Dictionary> toPlist();
-public:
+	virtual std::string displayName();
 	virtual std::string annotation();
+
+	//TODO Move annotation to plist::Object
+	inline std::string wrapAnnotation()
+	{
+		return " /* " + annotation() + " */";
+	}
 public:
     template <typename T>
     inline bool isa() const

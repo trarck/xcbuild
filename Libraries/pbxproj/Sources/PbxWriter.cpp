@@ -27,7 +27,22 @@ using plist::CastTo;
 
 namespace pbxproj {
 
+
 const std::string AsciiHeader = "// !$*UTF8*$!\n";
+
+bool DictComp(std::string &a, std::string &b) {
+	if (a == "isa") {
+		return false;
+	}
+	else if(b=="isa")
+	{
+		return true;
+	}
+	else
+	{
+		return a > b;
+	}
+}
 
 PbxWriter::
 	PbxWriter(PbxProj const *root, bool strings) :
@@ -89,7 +104,46 @@ bool PbxWriter::
 	writePairInteger("classes", pbxProj->archiveVersion());
 	writePairInteger("objectVersion", pbxProj->objectVersion());
 
-	writePairInteger("objects", pbxProj->objectVersion());
+	//write objects
+	if (!writeString("objects", true)) {
+		return false;
+	}
+
+	if (!writeString(" = ", false)) {
+		return false;
+	}
+
+	if (!writeString("{\n", false)) {
+		return false;
+	}
+
+	if (!writeString("\n", false)) {
+		return false;
+	}
+
+	auto groupObjects = pbxProj->getObjectsGroupByISA();
+
+	for (auto it : groupObjects) {
+		_indent++;
+		std::string sectionBegin = "/* Begin " + it.first + " section */";
+		std::string sectionEnd = "/* End " + it.first + " section */";
+		if (!writeString(sectionBegin, false)) {
+			return false;
+		}
+		
+		for (auto objIter : it.second) {
+
+			auto dict = objIter->toPlist();
+			std::sort(dict->begin(), dict->end(), DictComp);
+
+			writePair(objIter->uuid() + objIter->annotation(), dict.get(), objIter->isa() == "PBXBuildFile" || objIter->isa() == "PBXFileReference");
+		}
+		
+		if (!writeString(sectionEnd, false)) {
+			return false;
+		}
+		_indent--;
+	}
 
 	writePair("rootObject", pbxProj->rootObject()->uuid(),pbxProj->rootObject()->annotation());
 
@@ -466,6 +520,30 @@ bool PbxWriter::writePair(const std::string& key, const std::vector <uint8_t>& v
 	}
 }
 
+bool PbxWriter::writePair(const std::string& key, plist::Dictionary* dictionary, bool singleLine = false)
+{
+	_lastKey = false;
+
+	if (!writeEscapedString(key, !_lastKey)) {
+		return false;
+	}
+
+	if (!writeString(" = ", false)) {
+		return false;
+	}
+
+	_lastKey = true;
+
+	if (!handleDictionary(dictionary,false,singleLine)) {
+		return false;
+	}
+
+
+	if (!writeString(";\n", false)) {
+		return false;
+	}
+}
+
 /*
 	* Higher level functions.
 	*/
@@ -526,11 +604,11 @@ bool PbxWriter::
 }
 
 bool PbxWriter::
-	handleDictionary(Dictionary const *dictionary, bool root)
+	handleDictionary(Dictionary const *dictionary, bool root, bool singleLine = false)
 {
 	if (!_strings || !root) {
 		/* Write '{'. */
-		if (!writeString("{\n", !_lastKey)) {
+		if (!writeString(singleLine?"{":"{\n", !_lastKey)) {
 			return false;
 		}
 
@@ -556,7 +634,7 @@ bool PbxWriter::
 			return false;
 		}
 
-		if (!writeString(";\n", false)) {
+		if (!writeString(singleLine?";":";\n", false)) {
 			return false;
 		}
 	}
@@ -705,5 +783,10 @@ bool PbxWriter::
 	std::unique_ptr<Dictionary> dictionary = Dictionary::New();
 	dictionary->set("CF$UID", Integer::New(uid->value()));
 	return handleDictionary(dictionary.get(), root);
+}
+
+std::string PbxWriter::comment(const std::string& content)
+{
+	return " /* " + content + " */";
 }
 }

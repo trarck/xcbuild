@@ -72,3 +72,16 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     return true;
 }
+
+std::unique_ptr<plist::Dictionary>
+FileReference::toPlist()
+{
+	auto dict = GroupItem::toPlist();
+	dict->set("lastKnownFileType", plist::String::New(_lastKnownFileType));
+	dict->set("explicitFileType", plist::String::New(_explicitFileType));
+	dict->set("xcLanguageSpecificationIdentifier", plist::String::New(_xcLanguageSpecificationIdentifier));
+	dict->set("includeInIndex", plist::Boolean::New(_includeInIndex));
+	dict->set("fileEncoding", plist::Integer::New((int64_t)_fileEncoding));
+	dict->set("lineEnding", plist::Integer::New((int64_t)_lineEnding));
+	return dict;
+}

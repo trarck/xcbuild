@@ -28,6 +28,14 @@ Object(std::string const &isa,std::string const& uuid) :
 {
 }
 
+Object::
+Object(std::string const &isa, std::string const& uuid, std::weak_ptr<Object> const &parent) :
+	_isa(isa),
+	_uuid(uuid),
+	_parent(parent)
+{
+}
+
 bool Object::
 parseObject(Context &context, plist::Dictionary const *dict)
 {
@@ -60,7 +68,12 @@ std::unique_ptr<plist::Dictionary> Object::toPlist(){
 	return dict;
 }
 
+std::string Object::displayName()
+{
+	return isa();
+}
+
 std::string Object::annotation()
 {
-	return "";
+	return displayName();
 }
