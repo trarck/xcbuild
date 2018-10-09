@@ -55,7 +55,7 @@ std::unique_ptr<plist::Dictionary>
 ReferenceProxy::toPlist()
 {
 	auto dict = GroupItem::toPlist();
-	dict->set("remoteRef", plist::String::New(_remoteRef->uuid()+_remoteRef->wrapAnnotation());
+	dict->set("remoteRef", plist::String::New(_remoteRef->uuid()+_remoteRef->wrapAnnotation()));
 	dict->set("fileType", plist::String::New(_fileType));
 	return dict;
 }

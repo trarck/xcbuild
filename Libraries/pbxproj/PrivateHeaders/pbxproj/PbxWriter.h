@@ -42,6 +42,7 @@ private:
 private:
     bool writeString(std::string const &string, bool final);
     bool writeEscapedString(std::string const &string, bool final);
+	bool writeAnnotation(std::string const& annotation);
 
 	bool writeBoolean(bool boolean);
 	bool writeReal(double real);
@@ -55,7 +56,8 @@ private:
 	bool writePair(const std::string& key, bool value, const std::string& annotation = "");
 	bool writePair(const std::string& key, const std::string& value, const std::string& annotation = "");
 	bool writePair(const std::string& key, const std::vector <uint8_t>& value, const std::string& annotation = "");
-	bool writePair(const std::string& key, plist::Dictionary* dictionary, bool singleLine = false);
+	bool writePair(const std::string& key, const plist::Array  *array, const std::string& annotation = "");
+	bool writePair(const std::string& key, const plist::Dictionary* dictionary, bool singleLine = false,const std::string& annotation = "");
 
 private:
     bool handleObject(plist::Object const *object, bool root);
@@ -68,8 +70,6 @@ private:
     bool handleDate(plist::Date const *date, bool root);
     bool handleData(plist::Data const *data, bool root);
     bool handleUID(plist::UID const *uid, bool root);
-
-	std::string comment(const std::string& content);
 };
 
 }

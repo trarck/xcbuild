@@ -79,10 +79,14 @@ BuildConfiguration::toPlist()
 	auto settingDict = plist::Dictionary::New();
 
 	for (auto it : _buildSettings.settings()) {
-		settingDict->set(it.name, std::move(it.value().toPlist()));
+		settingDict->set(it.name(), std::move(it.value().toPlist()));
+	}
+	
+	if (_baseConfigurationReference)
+	{
+		dict->set("baseConfigurationReference", plist::String::New(_baseConfigurationReference->uuid()));
 	}
 
-	dict->set("baseConfigurationReference", plist::String::New(_baseConfigurationReference->uuid()));
 	dict->set("buildSettings", std::move(settingDict));
 	dict->set("name", plist::String::New(_name));
 	return dict;

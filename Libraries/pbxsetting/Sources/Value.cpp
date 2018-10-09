@@ -85,7 +85,8 @@ raw() const
 }
 
 std::unique_ptr<plist::Object> 
-Value::toPlist() {
+Value::toPlist() const
+{
 	if (_entries.size() == 1) {
 		return plist::String::New(*(_entries[0].string()));
 	}

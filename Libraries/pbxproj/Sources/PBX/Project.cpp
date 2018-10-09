@@ -313,6 +313,62 @@ Open(Filesystem const *filesystem, std::string const &path)
     return project;
 }
 
+
+std::unique_ptr<plist::Dictionary>
+Project::toPlist() {
+	auto dict = Object::toPlist();
+
+	dict->set("attributes", std::move(_attributes->copy()));
+
+	if (_buildConfigurationList != nullptr) {
+		dict->set("buildConfigurationList", plist::String::New(_buildConfigurationList->uuid(),_buildConfigurationList->annotation()));
+	}
+
+	if (!_compatibilityVersion.empty()) {
+		dict->set("compatibilityVersion", plist::String::New(_compatibilityVersion));
+	}
+
+	if (!_developmentRegion.empty()) {
+		dict->set("developmentRegion", plist::String::New(_developmentRegion));
+	}
+
+	dict->set("hasScannedForEncodings", plist::Boolean::New(_hasScannedForEncodings));
+
+	auto knownRegions = plist::Array::New();
+
+	for (auto it : _knownRegions) {
+		knownRegions->append(plist::String::New(it));
+	}
+	dict->set("knownRegions", std::move(knownRegions));
+
+	dict->set("mainGroup", plist::String::New(_mainGroup->uuid(), _mainGroup->annotation()));
+
+	if (_productRefGroup != nullptr) {
+		dict->set("productRefGroup", plist::String::New(_productRefGroup->uuid(), _productRefGroup->annotation()));
+	}
+
+	dict->set("projectDirPath", plist::String::New(_projectDirPath));	
+
+	if (_projectReferences.size()) {
+
+		auto projectReferences = plist::Array::New();
+		for (auto projectRef : _projectReferences) {
+			projectReferences->append(projectRef.toPlist());
+		}
+		dict->set("projectReferences", std::move(projectReferences));
+	}
+
+	dict->set("projectRoot", plist::String::New(_projectRoot));
+
+	auto targets = plist::Array::New();
+	for (auto target : _targets) {
+		targets->append(plist::String::New(target->uuid(), target->annotation()));
+	}
+	dict->set("targets", std::move(targets));
+
+	return dict;
+}
+
 Project::ProjectReference::
 ProjectReference()
 {
@@ -352,10 +408,10 @@ parse(Context &context, plist::Dictionary const *dict)
     return true;
 }
 
-std::unique_ptr<plist::Dictionary>
-Project::toPlist()
+std::unique_ptr<plist::Dictionary> Project::ProjectReference::toPlist()
 {
-	auto dict = Object::toPlist();
-	dict->set("fileRef", plist::String::New(_fileRef->uuid()));
+	auto dict = plist::Dictionary::New();
+	dict->set("ProductGroup", plist::String::New(_productGroup->uuid(), _productGroup->annotation()));
+	dict->set("ProjectRef", plist::String::New(_projectReference->uuid(), _projectReference->annotation()));
 	return dict;
 }

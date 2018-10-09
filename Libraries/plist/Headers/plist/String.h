@@ -18,10 +18,12 @@ namespace plist {
 class String : public Object {
 private:
     std::string _value;
+	std::string _annotation;
 
 public:
-    String(std::string const &value = std::string()) :
-        _value(value)
+    String(std::string const &value = std::string(),std::string const &annotation=std::string()) :
+        _value(value),
+		_annotation(annotation)
     {
     }
 
@@ -29,6 +31,12 @@ public:
         _value(std::move(value))
     {
     }
+
+	String(std::string &&value,std::string&& annotation) :
+		_value(std::move(value)),
+		_annotation(std::move(annotation))
+	{
+	}
 
 public:
     inline std::string const &value() const
@@ -46,9 +54,25 @@ public:
         _value = std::move(value);
     }
 
+	inline std::string const &annotation() const
+	{
+		return _annotation;
+	}
+
+	inline void setAnnotation(std::string const &annotation)
+	{
+		_annotation = annotation;
+	}
+
+	inline void setAnnotation(std::string &&annotation)
+	{
+		_annotation = std::move(annotation);
+	}
+
 public:
-    static std::unique_ptr<String> New(std::string const &value = std::string());
+    static std::unique_ptr<String> New(std::string const &value = std::string(), std::string const &annotation = std::string());
     static std::unique_ptr<String> New(std::string &&value);
+	static std::unique_ptr<String> New(std::string &&value, std::string &&annotation);
 
 public:
     static std::unique_ptr<String> Coerce(Object const *obj);

@@ -23,9 +23,9 @@ using plist::Integer;
 using plist::Real;
 
 std::unique_ptr<String> String::
-New(std::string const &value)
+New(std::string const &value, std::string const &annotation)
 {
-    return std::unique_ptr<String>(new String(value));
+    return std::unique_ptr<String>(new String(value, annotation));
 }
 
 std::unique_ptr<String> String::
@@ -34,10 +34,17 @@ New(std::string &&value)
     return std::unique_ptr<String>(new String(std::move(value)));
 }
 
+std::unique_ptr<String> String::
+New(std::string &&value,std::string && annotation)
+{
+	return std::unique_ptr<String>(new String(std::move(value),std::move(annotation)));
+}
+
+
 std::unique_ptr<Object> String::
 _copy() const
 {
-    return plist::static_unique_pointer_cast<Object>(String::New(value()));
+    return plist::static_unique_pointer_cast<Object>(String::New(value(),annotation()));
 }
 
 std::unique_ptr<String> String::

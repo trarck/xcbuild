@@ -26,6 +26,8 @@ public:
         inline FileReference::shared_ptr const &projectReference() const
         { return _projectReference; }
 
+		std::unique_ptr<plist::Dictionary> toPlist();
+
     protected:
         friend class pbxproj::PBX::Project;
         bool parse(Context &context, plist::Dictionary const *dict);
