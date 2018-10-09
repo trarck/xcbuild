@@ -348,7 +348,7 @@ writeData(std::vector <uint8_t> const &data)
 
 
 bool PbxWriter::
-writePairInteger(const std::string& key, int64_t value, const std::string& annotation = "")
+writePairInteger(const std::string& key, int64_t value, const std::string& annotation)
 {
 	_lastKey = false;
 
@@ -375,10 +375,11 @@ writePairInteger(const std::string& key, int64_t value, const std::string& annot
 	if (!writeString(";\n", false)) {
 		return false;
 	}
+    return true;
 }
 
 bool PbxWriter::
-writePair(const std::string& key, int64_t value, const std::string& annotation = "")
+writePair(const std::string& key, int64_t value, const std::string& annotation)
 {
 	_lastKey = false;
 
@@ -405,9 +406,10 @@ writePair(const std::string& key, int64_t value, const std::string& annotation =
 	if (!writeString(";\n", false)) {
 		return false;
 	}
+    return true;
 }
 
-bool PbxWriter::writePair(const std::string& key, double value, const std::string& annotation = "")
+bool PbxWriter::writePair(const std::string& key, double value, const std::string& annotation)
 {
 	_lastKey = false;
 
@@ -434,8 +436,10 @@ bool PbxWriter::writePair(const std::string& key, double value, const std::strin
 	if (!writeString(";\n", false)) {
 		return false;
 	}
+    return true;
 }
-bool PbxWriter::writePair(const std::string& key, bool value, const std::string& annotation = "")
+
+bool PbxWriter::writePair(const std::string& key, bool value, const std::string& annotation)
 {
 	_lastKey = false;
 
@@ -462,8 +466,9 @@ bool PbxWriter::writePair(const std::string& key, bool value, const std::string&
 	if (!writeString(";\n", false)) {
 		return false;
 	}
+    return true;
 }
-bool PbxWriter::writePair(const std::string& key, const std::string& value, const std::string& annotation = "")
+bool PbxWriter::writePair(const std::string& key, const std::string& value, const std::string& annotation)
 {
 	_lastKey = false;
 
@@ -490,8 +495,9 @@ bool PbxWriter::writePair(const std::string& key, const std::string& value, cons
 	if (!writeString(";\n", false)) {
 		return false;
 	}
+    return true;
 }
-bool PbxWriter::writePair(const std::string& key, const std::vector <uint8_t>& value, const std::string& annotation = "")
+bool PbxWriter::writePair(const std::string& key, const std::vector <uint8_t>& value, const std::string& annotation)
 {
 	_lastKey = false;
 
@@ -518,6 +524,7 @@ bool PbxWriter::writePair(const std::string& key, const std::vector <uint8_t>& v
 	if (!writeString(";\n", false)) {
 		return false;
 	}
+    return true;
 }
 
 bool PbxWriter::writePair(const std::string& key, plist::Dictionary* dictionary, bool singleLine = false)

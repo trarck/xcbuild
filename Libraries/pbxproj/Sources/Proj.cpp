@@ -215,7 +215,7 @@ namespace pbxproj {
 		return a->uuid() > b->uuid();
 	}
 
-	std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> PbxProj::getObjectsGroupByISA()
+	std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> PbxProj::getObjectsGroupByISA() const
 	{
 		std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> groups;
 
