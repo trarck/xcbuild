@@ -98,7 +98,7 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
 
     if (A != nullptr) {
         // TODO(grp): Handle attributes.
-		_attributes = std::move(A->copy());
+		_attributes = A->copy();
     }
 
     if (CV != nullptr) {
@@ -318,7 +318,7 @@ std::unique_ptr<plist::Dictionary>
 Project::toPlist() {
 	auto dict = Object::toPlist();
 
-	dict->set("attributes", std::move(_attributes->copy()));
+	dict->set("attributes", _attributes->copy());
 
 	if (_buildConfigurationList != nullptr) {
 		dict->set("buildConfigurationList", plist::String::New(_buildConfigurationList->uuid(),_buildConfigurationList->annotation()));

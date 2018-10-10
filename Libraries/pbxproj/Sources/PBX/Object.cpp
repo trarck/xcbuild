@@ -21,20 +21,6 @@ Object(std::string const &isa) :
 {
 }
 
-Object::
-Object(std::string const &isa,std::string const& uuid) :
-	_isa(isa),
-	_uuid(uuid)
-{
-}
-
-Object::
-Object(std::string const &isa, std::string const& uuid, std::weak_ptr<Object> const &parent) :
-	_isa(isa),
-	_uuid(uuid),
-	_parent(parent)
-{
-}
 
 bool Object::
 parseObject(Context &context, plist::Dictionary const *dict)

@@ -35,8 +35,6 @@ private:
 	std::weak_ptr<Object> _parent;
 protected:
     Object(std::string const &isa);
-	Object(std::string const &isa, std::string const &uuid);
-	Object(std::string const &isa, std::string const &uuid, std::weak_ptr<Object> const &parent);
 public:
     inline std::string const &blueprintIdentifier() const
     { return _uuid; }
@@ -52,9 +50,9 @@ public:
 		_uuid = uuid;
 	}
 
-	inline const Object::shared_ptr &parent() const
+	inline const Object::shared_ptr parent() const
 	{
-		return _parent.lock();
+        return _parent.lock();
 	}
 
 	inline void setParent(Object::shared_ptr const & parent)

@@ -53,22 +53,22 @@ name()
     return "repack-rename";
 }
 
-static bool
-Save(plist::Object *root, plist::Format::Any const &format, Filesystem *filesystem, std::string const &path)
-{
-	auto serialize = plist::Format::Any::Serialize(root, format);
-	if (serialize.first == nullptr) {
-		fprintf(stderr, "Error: %s\n", serialize.second.c_str());
-		return false;
-	}
-
-	if (!filesystem->write(*serialize.first, path)) {
-		fprintf(stderr, "Could not write to output\n");
-		return false;
-	}
-
-	return true;
-}
+//static bool
+//Save(plist::Object *root, plist::Format::Any const &format, Filesystem *filesystem, std::string const &path)
+//{
+//    auto serialize = plist::Format::Any::Serialize(root, format);
+//    if (serialize.first == nullptr) {
+//        fprintf(stderr, "Error: %s\n", serialize.second.c_str());
+//        return false;
+//    }
+//
+//    if (!filesystem->write(*serialize.first, path)) {
+//        fprintf(stderr, "Could not write to output\n");
+//        return false;
+//    }
+//
+//    return true;
+//}
 
 int renameProductName(Filesystem const *filesystem, PbxProj::shared_ptr const &project,const std::string& productName)
 {

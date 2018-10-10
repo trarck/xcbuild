@@ -268,7 +268,7 @@ namespace pbxproj {
 		}
 
 		std::string data(content.begin(),content.end());
-		printf(data.c_str());
+		printf("%s",data.c_str());
 		return true;
 	}
 

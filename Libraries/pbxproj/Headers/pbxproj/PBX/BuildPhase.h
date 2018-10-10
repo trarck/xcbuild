@@ -14,7 +14,7 @@
 
 namespace pbxproj { namespace PBX {
 
-class BuildPhase : public Object {
+class BuildPhase : public Object, public std::enable_shared_from_this<BuildPhase>  {
 public:
     typedef std::shared_ptr <BuildPhase> shared_ptr;
     typedef std::vector <shared_ptr> vector;

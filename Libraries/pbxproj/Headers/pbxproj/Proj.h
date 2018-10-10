@@ -38,7 +38,7 @@ public:
 	static shared_ptr Open(libutil::Filesystem const *filesystem, std::string const &path);
 	bool save();
 public:
-	inline PBX::Target::vector const &targets() const
+	inline PBX::Target::vector const targets() const
 	{
 		if (_rootObject != nullptr) {
 			return _rootObject->targets();

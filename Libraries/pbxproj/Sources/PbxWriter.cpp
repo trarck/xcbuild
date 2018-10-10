@@ -8,7 +8,7 @@
  */
 
 #include <pbxproj/PbxWriter.h>
-#include <pbxproj/PbxProj.h>
+#include <pbxproj/Proj.h>
 #include <plist/Objects.h>
 
 #include <cassert>
@@ -30,7 +30,8 @@ namespace pbxproj {
 
 	const std::string AsciiHeader = "// !$*UTF8*$!\n";
 
-	bool DictComp(std::string &a, std::string &b) {
+	bool DictComp(const std::string &a, const std::string &b)
+    {
 		if (a == "isa") {
 			return false;
 		}
@@ -565,6 +566,7 @@ namespace pbxproj {
 		if (!writeString(";\n", false)) {
 			return false;
 		}
+        return true;
 	}
 
 	bool PbxWriter::writePair(const std::string& key, const plist::Dictionary* dictionary, bool singleLine, const std::string& annotation)
@@ -593,6 +595,7 @@ namespace pbxproj {
 		if (!writeString(";\n", false)) {
 			return false;
 		}
+        return true;
 	}
 
 	/*
@@ -658,7 +661,7 @@ namespace pbxproj {
 		handleDictionary(Dictionary const *dictionary, bool root, bool singleLine)
 	{
 
-		std::sort(dictionary->begin(), dictionary->end(), DictComp);
+		//std::sort(dictionary->begin(), dictionary->end(), DictComp);
 
 		if (!_strings || !root) {
 			/* Write '{'. */
