@@ -16,3 +16,16 @@ ResourcesBuildPhase() :
     BuildPhase(Isa(), Type::Resources)
 {
 }
+
+
+std::string ResourcesBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "Resources";
+	}
+	else
+	{
+		return name();
+	}
+}

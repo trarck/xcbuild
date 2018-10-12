@@ -94,6 +94,7 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
         if (!_buildConfigurationList) {
             return false;
         }
+		_buildConfigurationList->setParent(shared_from_this());
     }
 
     if (A != nullptr) {
@@ -332,7 +333,7 @@ Project::toPlist() {
 		dict->set("developmentRegion", plist::String::New(_developmentRegion));
 	}
 
-	dict->set("hasScannedForEncodings", plist::Boolean::New(_hasScannedForEncodings));
+	dict->set("hasScannedForEncodings", plist::Integer::New(_hasScannedForEncodings));
 
 	auto knownRegions = plist::Array::New();
 
@@ -367,6 +368,16 @@ Project::toPlist() {
 	dict->set("targets", std::move(targets));
 
 	return dict;
+}
+
+std::string Project::displayName()
+{
+	return _name;
+}
+
+std::string Project::annotation()
+{
+	return "Project object";
 }
 
 Project::ProjectReference::

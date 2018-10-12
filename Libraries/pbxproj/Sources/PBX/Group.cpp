@@ -54,7 +54,10 @@ std::unique_ptr<plist::Dictionary>
 Group::toPlist()
 {
 	auto dict = BaseGroup::toPlist();
-	dict->set("indentWidth", plist::Integer::New(_indentWidth));
+	if(_indentWidth>0)
+		dict->set("indentWidth", plist::Integer::New(_indentWidth));
+
+	if(_tabWidth>0)
 	dict->set("tabWidth", plist::Integer::New(_tabWidth));
 	return dict;
 }

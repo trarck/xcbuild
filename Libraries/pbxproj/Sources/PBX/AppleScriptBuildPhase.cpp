@@ -56,3 +56,16 @@ AppleScriptBuildPhase::toPlist()
 	dict->set("isSharedContext", plist::Boolean::New(_isSharedContext));
 	return dict;
 }
+
+
+std::string AppleScriptBuildPhase::displayName()
+{
+	if (name().empty()) 
+	{
+		return "AppleScript";
+	}
+	else
+	{
+		return name();
+	}
+}

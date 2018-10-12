@@ -75,7 +75,7 @@ std::unique_ptr<plist::Dictionary> ConfigurationList::toPlist()
 	auto dict = Object::toPlist();
 	auto buildConfs = plist::Array::New();
 	for (auto it : _buildConfigurations) {
-		buildConfs->append(plist::String::New(it->uuid()+it->wrapAnnotation()));
+		buildConfs->append(plist::String::New(it->uuid(),it->annotation()));
 	}
 
 	dict->set("defaultConfigurationName", plist::String::New(_defaultConfigurationName));
@@ -83,4 +83,10 @@ std::unique_ptr<plist::Dictionary> ConfigurationList::toPlist()
 	dict->set("buildConfigurations", std::move(buildConfs));
 
 	return dict;
+}
+
+
+std::string ConfigurationList::displayName()
+{
+	return "Build configuration list for "+parent()->isa()+" \""+parent()->displayName()+"\"";
 }

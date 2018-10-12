@@ -23,7 +23,7 @@ namespace pbxproj {
 
 
 
-class Target : public Object {
+class Target : public Object, public std::enable_shared_from_this<Target> {
 public:
     typedef std::shared_ptr <Target> shared_ptr;
     typedef std::vector <shared_ptr> vector;
@@ -92,6 +92,7 @@ protected:
     bool parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::string> *seen, bool check) override;
 public:
 	std::unique_ptr<plist::Dictionary> toPlist() override;
+	std::string displayName() override;
 };
 
 } }

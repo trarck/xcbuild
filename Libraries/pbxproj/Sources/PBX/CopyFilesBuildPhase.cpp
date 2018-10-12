@@ -55,8 +55,20 @@ std::unique_ptr<plist::Dictionary> CopyFilesBuildPhase::toPlist()
 {
 	auto dict = BuildPhase::toPlist();
 
-	dict->set("dstPath", _dstPath.toPlist());
+	dict->set("dstPath",plist::String::New(_dstPath.raw()));
 	dict->set("dstSubfolderSpec", plist::Integer::New(_dstSubfolderSpec));
 
 	return dict;
+}
+
+std::string CopyFilesBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "CopyFiles";
+	}
+	else
+	{
+		return name();
+	}
 }

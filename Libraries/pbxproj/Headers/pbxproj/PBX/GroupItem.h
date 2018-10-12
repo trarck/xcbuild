@@ -65,6 +65,7 @@ protected:
     bool parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::string> *seen, bool check) override;
 public:
 	std::unique_ptr<plist::Dictionary> toPlist() override;
+	std::string displayName() override;
 };
 
 } }

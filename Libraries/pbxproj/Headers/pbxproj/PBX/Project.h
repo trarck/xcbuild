@@ -10,7 +10,7 @@ namespace libutil { class Filesystem; }
 
 namespace pbxproj { namespace PBX {
 
-class Project : public Object {
+class Project : public Object, public std::enable_shared_from_this<Project> {
 public:
     class ProjectReference {
     private:
@@ -110,6 +110,12 @@ public:
 public:
     inline std::string const &name() const
     { return _name; }
+
+	inline void const setName(const std::string name)
+	{
+		_name=name;
+	}
+
     inline std::string const &dataFile() const
     { return _dataFile; }
     inline std::string const &projectFile() const
@@ -149,6 +155,8 @@ protected:
     bool parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::string> *seen, bool check) override;
 public:
 	std::unique_ptr<plist::Dictionary> toPlist() override;
+	std::string displayName() override;
+	std::string annotation() override;
 public:
     static inline char const *Isa()
     { return ISA::PBXProject; }

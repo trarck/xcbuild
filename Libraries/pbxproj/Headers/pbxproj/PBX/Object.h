@@ -81,11 +81,6 @@ public:
 	virtual std::string displayName();
 	virtual std::string annotation();
 
-	//TODO Move annotation to plist::Object
-	inline std::string wrapAnnotation()
-	{
-		return " /* " + annotation() + " */";
-	}
 public:
     template <typename T>
     inline bool isa() const

@@ -16,3 +16,15 @@ HeadersBuildPhase() :
     BuildPhase(Isa(), Type::Headers)
 {
 }
+
+std::string HeadersBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "Headers";
+	}
+	else
+	{
+		return name();
+	}
+}

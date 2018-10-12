@@ -16,3 +16,15 @@ RezBuildPhase() :
     BuildPhase(Isa(), Type::Rez)
 {
 }
+
+std::string RezBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "Rez";
+	}
+	else
+	{
+		return name();
+	}
+}

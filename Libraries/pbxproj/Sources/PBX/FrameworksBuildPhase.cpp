@@ -16,3 +16,15 @@ FrameworksBuildPhase() :
     BuildPhase(Isa(), Type::Frameworks)
 {
 }
+
+std::string FrameworksBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "Frameworks";
+	}
+	else
+	{
+		return name();
+	}
+}

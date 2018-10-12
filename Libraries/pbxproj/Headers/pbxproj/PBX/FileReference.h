@@ -52,6 +52,7 @@ private:
     std::string  _explicitFileType;
     std::string  _xcLanguageSpecificationIdentifier;
     bool         _includeInIndex;
+	bool         _haveIncludeInIndex;
     FileEncoding _fileEncoding;
     LineEnding   _lineEnding;
 

@@ -125,6 +125,11 @@ public:
     }
 
 public:
+	inline const std::vector<std::string>& keys() const
+	{
+		return _keys;
+	}
+
     inline std::vector<std::string>::const_iterator begin() const
     {
         return _keys.begin();
@@ -134,6 +139,11 @@ public:
     {
         return _keys.end();
     }
+
+	inline void sort(bool(*compareFunction)(const std::string &a, const std::string &b))
+	{
+		std::sort(_keys.begin(), _keys.end(), compareFunction);
+	}
 
 public:
     static std::unique_ptr<Dictionary> Coerce(Object const *obj);
@@ -184,6 +194,8 @@ public:
 
 public:
     void merge(Dictionary const *dict, bool replace = true);
+
+
 };
 
 }

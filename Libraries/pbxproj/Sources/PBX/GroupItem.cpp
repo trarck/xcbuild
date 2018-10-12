@@ -81,8 +81,28 @@ std::unique_ptr<plist::Dictionary>
 GroupItem::toPlist()
 {
 	auto dict = Object::toPlist();
-	dict->set("name", plist::String::New(_name));
-	dict->set("sourceTree", plist::String::New(_sourceTree));
-	dict->set("path", plist::String::New(_path));
+	if (!_name.empty()) {
+		dict->set("name", plist::String::New(_name));
+	}
+
+	if (!_sourceTree.empty()) {
+		dict->set("sourceTree", plist::String::New(_sourceTree));
+	}
+
+	if (!_path.empty()) {
+		dict->set("path", plist::String::New(_path));
+	}
 	return dict;
+}
+
+std::string GroupItem::displayName()
+{
+	if (!_name.empty()) {
+		return _name;
+	}
+
+	if (!_path.empty()) {
+		return _path;
+	}
+	return "";
 }

@@ -85,11 +85,16 @@ NativeTarget::toPlist()
 	auto rules = plist::Array::New();
 
 	for (auto it : _buildRules) {
-		rules->append(plist::String::New(it->uuid() + it->wrapAnnotation()));
+		rules->append(plist::String::New(it->uuid() , it->annotation()));
+	}
+
+	if (_productReference) {
+		dict->set("productReference", plist::String::New(_productReference->uuid(), _productReference->annotation()));
 	}
 
 	dict->set("productType", plist::String::New(_productType));
-	dict->set("productInstallPath", plist::String::New(_productInstallPath));
+	if(!_productInstallPath.empty())
+		dict->set("productInstallPath", plist::String::New(_productInstallPath));
 	dict->set("buildRules", std::move(rules));
 	
 	return dict;

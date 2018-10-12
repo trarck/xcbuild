@@ -77,8 +77,10 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
         }
     }
 
+	_haveShowEnvVarsInLog = false;
     if (SE != nullptr) {
         _showEnvVarsInLog = SE->value();
+		_haveShowEnvVarsInLog = true;
     }
 
     return true;
@@ -98,13 +100,29 @@ ShellScriptBuildPhase::toPlist()
 	for (auto it : _outputPaths) {
 		outputs->append(it.toPlist());
 	}
+	if (!_name.empty()) {
+		dict->set("name", plist::String::New(_name));
+	}
 
-	dict->set("name", plist::String::New(_name));
 	dict->set("shellPath", plist::String::New(_shellPath));
 	dict->set("shellScript", plist::String::New(_shellScript));
 	dict->set("inputPaths",std::move(inputs));
 	dict->set("outputPaths", std::move(outputs));
-	dict->set("showEnvVarsInLog", plist::Boolean::New(_showEnvVarsInLog));
+	if (_haveShowEnvVarsInLog) {
+		dict->set("showEnvVarsInLog", plist::Boolean::New(_showEnvVarsInLog));
+	}
 
 	return dict;
+}
+
+std::string ShellScriptBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "ShellScript";
+	}
+	else
+	{
+		return name();
+	}
 }

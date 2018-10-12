@@ -21,6 +21,7 @@
 #include <libutil/Filesystem.h>
 #include <libutil/FSUtil.h>
 #include <process/Context.h>
+#include <pbxproj/PbxWriter.h>
 
 #define UTF8Head "// !$*UTF8*$!\n"
 
@@ -140,7 +141,7 @@ namespace pbxproj {
 			fprintf(stderr, "error: unable to create rootObject\n");
 			return false;
 		}
-		
+		_rootObject->setName(_name);
 
 		//
 		// Transfer all file references from cache.
@@ -198,8 +199,6 @@ namespace pbxproj {
 		Context content;
 		content.pbxproj = pbxProj;
 
-		pbxProj->parse(content,plist,projectFileName);
-
 		//
 		// Save some useful info
 		//
@@ -207,6 +206,9 @@ namespace pbxproj {
 		pbxProj->_projectFile = FSUtil::GetDirectoryName(realPath);
 		pbxProj->_basePath = FSUtil::GetDirectoryName(pbxProj->_projectFile);
 		pbxProj->_name = FSUtil::GetBaseNameWithoutExtension(pbxProj->_projectFile);
+
+		pbxProj->parse(content,plist,projectFileName);
+
 
 		return pbxProj;
 	}
@@ -223,52 +225,80 @@ namespace pbxproj {
 			groups[it.second->isa()].push_back(it.second);
 		}
 
-		//sort group
-		for (auto it : groups) {
-			std::sort(it.second.begin(), it.second.end(), ObjectComp);
-		}
-		
 		return groups;
 	}
 
-	bool PbxProj::save() {
-		std::vector<uint8_t> content;
-		std::string head = UTF8Head;
-		content.insert(content.end(), head.begin(), head.end());
+	bool PbxProj::save(Filesystem  *filesystem, std::string const &path)
+	{
 
-		plist::Dictionary root;
+		PbxWriter pbxWriter(this,false);
 
+		pbxWriter.write();
 
+		std::vector<uint8_t> content = pbxWriter.contents();
 
-		root.set("archiveVersion", plist::Integer::New(_archiveVersion));
-		root.set("classes", plist::Dictionary::New());
-		root.set("objectVersion", plist::Integer::New(_objectVersion));
-		//group objects
-		std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> groups;
+		//std::vector<uint8_t> content;
+		//std::string head = UTF8Head;
+		//content.insert(content.end(), head.begin(), head.end());
 
-		for (auto it : _objects) {
-			groups[it.second->isa()].push_back(it.second);			
-		}
-
-		//sort group
-		for (auto it : groups) {
-			std::sort(it.second.begin(), it.second.end(), ObjectComp);
-		}
-
-		root.set("objects", plist::Integer::New(_objectVersion)); 
+		//plist::Dictionary root;
 
 
 
-		root.set("rootObject", plist::String::New(_rootObject->uuid()));
+		//root.set("archiveVersion", plist::Integer::New(_archiveVersion));
+		//root.set("classes", plist::Dictionary::New());
+		//root.set("objectVersion", plist::Integer::New(_objectVersion));
+		////group objects
+		//std::unordered_map<std::string, std::vector<PBX::Object::shared_ptr>> groups;
 
-		plist::Format::ASCII ascii = plist::Format::ASCII::Create(false, plist::Format::Encoding::UTF8);
-		auto result= plist::Format::ASCII::Serialize(&root, ascii);
-		if (result.first != nullptr) {
-			content.insert(content.end(), result.first->begin(), result.first->end());
-		}
+		//for (auto it : _objects) {
+		//	groups[it.second->isa()].push_back(it.second);			
+		//}
+
+		////sort group
+		//for (auto it : groups) {
+		//	std::sort(it.second.begin(), it.second.end(), ObjectComp);
+		//}
+
+		//root.set("objects", plist::Integer::New(_objectVersion)); 
+
+
+
+		//root.set("rootObject", plist::String::New(_rootObject->uuid(),_rootObject->annotation()));
+
+		//plist::Format::ASCII ascii = plist::Format::ASCII::Create(false, plist::Format::Encoding::UTF8);
+		//auto result= plist::Format::ASCII::Serialize(&root, ascii);
+		//if (result.first != nullptr) {
+		//	content.insert(content.end(), result.first->begin(), result.first->end());
+		//}
 
 		std::string data(content.begin(),content.end());
 		printf("%s",data.c_str());
+
+		std::string outPath;
+		if (path.empty()) 
+		{
+			outPath = _dataFile+".txt";
+		}
+		else
+		{
+			std::string projectFileName = path + "/project.pbxproj";
+			if (!filesystem->isReadable(projectFileName)) {
+				fprintf(stderr, "error: project file %s is not readable\n", projectFileName.c_str());
+				return nullptr;
+			}
+
+			std::string outPath = filesystem->resolvePath(projectFileName);
+			if (outPath.empty()) {
+				fprintf(stderr, "error: project file %s is not resolvable\n", projectFileName.c_str());
+				return nullptr;
+			}
+		}
+		if (!filesystem->write(content, outPath)) {
+			fprintf(stderr, "Could not write to output\n");
+			return false;
+		}
+
 		return true;
 	}
 

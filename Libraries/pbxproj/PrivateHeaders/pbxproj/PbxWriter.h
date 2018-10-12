@@ -56,20 +56,20 @@ private:
 	bool writePair(const std::string& key, bool value, const std::string& annotation = "");
 	bool writePair(const std::string& key, const std::string& value, const std::string& annotation = "");
 	bool writePair(const std::string& key, const std::vector <uint8_t>& value, const std::string& annotation = "");
-	bool writePair(const std::string& key, const plist::Array  *array, const std::string& annotation = "");
-	bool writePair(const std::string& key, const plist::Dictionary* dictionary, bool singleLine = false,const std::string& annotation = "");
+	bool writePair(const std::string& key, plist::Array  *array, const std::string& annotation = "");
+	bool writePair(const std::string& key, plist::Dictionary* dictionary, bool singleLine = false,const std::string& annotation = "");
 
 private:
-    bool handleObject(plist::Object const *object, bool root);
-    bool handleArray(plist::Array const *array, bool root);
-    bool handleDictionary(plist::Dictionary const *dictionary, bool root,bool singleLine=false);
-    bool handleBoolean(plist::Boolean const *boolean, bool root);
-    bool handleReal(plist::Real const *real, bool root);
-    bool handleInteger(plist::Integer const *integer, bool root);
-    bool handleString(plist::String const *string, bool root);
-    bool handleDate(plist::Date const *date, bool root);
-    bool handleData(plist::Data const *data, bool root);
-    bool handleUID(plist::UID const *uid, bool root);
+    bool handleObject(plist::Object *object, bool root, bool singleLine = false);
+    bool handleArray(plist::Array *array, bool root, bool singleLine = false);
+    bool handleDictionary(plist::Dictionary *dictionary, bool root,bool singleLine=false);
+    bool handleBoolean(plist::Boolean *boolean, bool root);
+    bool handleReal(plist::Real *real, bool root);
+    bool handleInteger(plist::Integer *integer, bool root);
+    bool handleString(plist::String *string, bool root);
+    bool handleDate(plist::Date *date, bool root);
+    bool handleData(plist::Data *data, bool root);
+    bool handleUID(plist::UID *uid, bool root);
 };
 
 }

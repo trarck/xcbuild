@@ -58,8 +58,10 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
         _xcLanguageSpecificationIdentifier = XLSI->value();
     }
 
+	_haveIncludeInIndex = false;
     if (III != nullptr) {
         _includeInIndex = III->value();
+		_haveIncludeInIndex = true;
     }
 
     if (FE != nullptr) {
@@ -77,11 +79,27 @@ std::unique_ptr<plist::Dictionary>
 FileReference::toPlist()
 {
 	auto dict = GroupItem::toPlist();
-	dict->set("lastKnownFileType", plist::String::New(_lastKnownFileType));
-	dict->set("explicitFileType", plist::String::New(_explicitFileType));
-	dict->set("xcLanguageSpecificationIdentifier", plist::String::New(_xcLanguageSpecificationIdentifier));
-	dict->set("includeInIndex", plist::Boolean::New(_includeInIndex));
-	dict->set("fileEncoding", plist::Integer::New((int64_t)_fileEncoding));
-	dict->set("lineEnding", plist::Integer::New((int64_t)_lineEnding));
+	if (!_lastKnownFileType.empty()) {
+		dict->set("lastKnownFileType", plist::String::New(_lastKnownFileType));
+	}
+
+	if (!_explicitFileType.empty()) {
+		dict->set("explicitFileType", plist::String::New(_explicitFileType));
+	}
+
+	if (!_xcLanguageSpecificationIdentifier.empty()) {
+		dict->set("xcLanguageSpecificationIdentifier", plist::String::New(_xcLanguageSpecificationIdentifier));
+	}
+
+	if (_haveIncludeInIndex) {
+		dict->set("includeInIndex", plist::Integer::New(_includeInIndex));
+	}
+
+	if ((int)_fileEncoding > 0) {
+		dict->set("fileEncoding", plist::Integer::New((int64_t)_fileEncoding));
+	}
+	if ((int)_lineEnding > 0) {
+		dict->set("lineEnding", plist::Integer::New((int64_t)_lineEnding));
+	}
 	return dict;
 }

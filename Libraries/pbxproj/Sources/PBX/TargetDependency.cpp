@@ -78,7 +78,12 @@ TargetDependency::toPlist()
 {
 	auto dict = Object::toPlist();
 	dict->set("name", plist::String::New(_name));
-	dict->set("targetProxy", plist::String::New(_targetProxy->uuid()));
-	dict->set("target", plist::String::New(_target->uuid()));
+	if (_targetProxy) {
+		dict->set("targetProxy", plist::String::New(_targetProxy->uuid(),_targetProxy->annotation()));
+	}
+
+	if (_target) {
+		dict->set("target", plist::String::New(_target->uuid(),_target->annotation()));
+	}
 	return dict;
 }

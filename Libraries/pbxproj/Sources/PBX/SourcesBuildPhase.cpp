@@ -16,3 +16,15 @@ SourcesBuildPhase() :
     BuildPhase(Isa(), Type::Sources)
 {
 }
+
+std::string SourcesBuildPhase::displayName()
+{
+	if (name().empty())
+	{
+		return "Sources";
+	}
+	else
+	{
+		return name();
+	}
+}

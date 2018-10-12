@@ -33,15 +33,15 @@ namespace pbxproj {
 	bool DictComp(const std::string &a, const std::string &b)
     {
 		if (a == "isa") {
-			return false;
+			return true;
 		}
 		else if (b == "isa")
 		{
-			return true;
+			return false;
 		}
 		else
 		{
-			return a > b;
+			return a < b;
 		}
 	}
 
@@ -67,7 +67,7 @@ namespace pbxproj {
 		}
 
 		for (char c : string) {
-			if (!isalnum(c) && c != '_') {
+			if (!isalnum(c) && ( c != '_' && c!='.' && c!='/')) {
 				return true;
 			}
 		}
@@ -102,7 +102,11 @@ namespace pbxproj {
 		_indent++;
 
 		writePairInteger("archiveVersion", pbxProj->archiveVersion());
-		writePairInteger("classes", pbxProj->archiveVersion());
+		
+		auto classes = plist::Dictionary::New();
+
+		writePair("classes", classes.get());
+
 		writePairInteger("objectVersion", pbxProj->objectVersion());
 
 		//write objects
@@ -117,22 +121,34 @@ namespace pbxproj {
 		if (!writeString("{\n", false)) {
 			return false;
 		}
-
-		if (!writeString("\n", false)) {
-			return false;
+		
+		auto groupObjects = pbxProj->getObjectsGroupByISA();
+		std::vector<std::string> keys;
+		for (auto it : groupObjects) {
+			keys.push_back(it.first);
 		}
 
-		auto groupObjects = pbxProj->getObjectsGroupByISA();
+		std::sort(keys.begin(), keys.end());
 
-		for (auto it : groupObjects) {
+		for (auto key : keys) {
 			_indent++;
-			std::string sectionBegin = "/* Begin " + it.first + " section */";
-			std::string sectionEnd = "/* End " + it.first + " section */";
+
+			if (!writeString("\n", false)) {
+				return false;
+			}
+			std::string sectionBegin = "/* Begin " + key + " section */\n";
+			std::string sectionEnd = "/* End " + key + " section */\n";
 			if (!writeString(sectionBegin, false)) {
 				return false;
 			}
 
-			for (auto objIter : it.second) {
+			auto items = groupObjects[key];
+
+			std::sort(items.begin(), items.end(), [](PBX::Object::shared_ptr &a, PBX::Object::shared_ptr &b)->bool {
+				return a->uuid() < b->uuid();
+			});
+
+			for (auto objIter : items) {
 
 				auto dict = objIter->toPlist();
 				//std::sort(dict->begin(), dict->end(), DictComp);
@@ -232,7 +248,8 @@ namespace pbxproj {
 				case '\v': if (!primitiveWriteString("\\v")) { return false; } break;
 				case '\f': if (!primitiveWriteString("\\f")) { return false; } break;
 				case '"':  if (!primitiveWriteString("\\\"")) { return false; } break;
-				case '\\': if (!primitiveWriteString("\\")) { return false; } break;
+				case '\\': if (!primitiveWriteString("\\\\")) { return false; } break;
+				case '\n': if (!primitiveWriteString("\\n")) { return false; } break;
 				default: _contents.push_back(c); break;
 				}
 			}
@@ -284,7 +301,7 @@ namespace pbxproj {
 				return false;
 			}
 
-			if (!writeEscapedString(annotation, false)) {
+			if (!writeString(annotation, false)) {
 				return false;
 			}
 
@@ -540,7 +557,7 @@ namespace pbxproj {
 		return true;
 	}
 
-	bool PbxWriter::writePair(const std::string& key, const plist::Array* array, const std::string& annotation)
+	bool PbxWriter::writePair(const std::string& key, plist::Array* array, const std::string& annotation)
 	{
 		_lastKey = false;
 
@@ -569,7 +586,7 @@ namespace pbxproj {
         return true;
 	}
 
-	bool PbxWriter::writePair(const std::string& key, const plist::Dictionary* dictionary, bool singleLine, const std::string& annotation)
+	bool PbxWriter::writePair(const std::string& key, plist::Dictionary* dictionary, bool singleLine, const std::string& annotation)
 	{
 		_lastKey = false;
 
@@ -603,49 +620,49 @@ namespace pbxproj {
 		*/
 
 	bool PbxWriter::
-		handleObject(plist::Object const *object, bool root)
+		handleObject(plist::Object *object, bool root,bool singleLine)
 	{
-		if (Dictionary const *dictionary = CastTo<Dictionary>(object)) {
-			if (!handleDictionary(dictionary, root)) {
+		if (Dictionary *dictionary = CastTo<Dictionary>(object)) {
+			if (!handleDictionary(dictionary, root, singleLine)) {
 				return false;
 			}
 		}
-		else if (Array const *array = CastTo<Array>(object)) {
-			if (!handleArray(array, root)) {
+		else if (Array *array = CastTo<Array>(object)) {
+			if (!handleArray(array, root, singleLine)) {
 				return false;
 			}
 		}
-		else if (Boolean const *boolean = CastTo<Boolean>(object)) {
+		else if (Boolean *boolean = CastTo<Boolean>(object)) {
 			if (!handleBoolean(boolean, root)) {
 				return false;
 			}
 		}
-		else if (Integer const *integer = CastTo<Integer>(object)) {
+		else if (Integer *integer = CastTo<Integer>(object)) {
 			if (!handleInteger(integer, root)) {
 				return false;
 			}
 		}
-		else if (Real const *real = CastTo<Real>(object)) {
+		else if (Real *real = CastTo<Real>(object)) {
 			if (!handleReal(real, root)) {
 				return false;
 			}
 		}
-		else if (String const *string = CastTo<String>(object)) {
+		else if (String *string = CastTo<String>(object)) {
 			if (!handleString(string, root)) {
 				return false;
 			}
 		}
-		else if (Data const *data = CastTo<Data>(object)) {
+		else if (Data *data = CastTo<Data>(object)) {
 			if (!handleData(data, root)) {
 				return false;
 			}
 		}
-		else if (Date const *date = CastTo<Date>(object)) {
+		else if (Date *date = CastTo<Date>(object)) {
 			if (!handleDate(date, root)) {
 				return false;
 			}
 		}
-		else if (UID const *uid = CastTo<UID>(object)) {
+		else if (UID *uid = CastTo<UID>(object)) {
 			if (!handleUID(uid, root)) {
 				return false;
 			}
@@ -658,10 +675,9 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleDictionary(Dictionary const *dictionary, bool root, bool singleLine)
+		handleDictionary(Dictionary *dictionary, bool root, bool singleLine)
 	{
-
-		//std::sort(dictionary->begin(), dictionary->end(), DictComp);
+		dictionary->sort(DictComp);
 
 		if (!_strings || !root) {
 			/* Write '{'. */
@@ -677,7 +693,7 @@ namespace pbxproj {
 		for (size_t i = 0; i < dictionary->count(); ++i) {
 			_lastKey = false;
 
-			if (!writeEscapedString(dictionary->key(i), !_lastKey)) {
+			if (!writeEscapedString(dictionary->key(i),!singleLine && !_lastKey)) {
 				return false;
 			}
 
@@ -687,18 +703,18 @@ namespace pbxproj {
 
 			_lastKey = true;
 
-			if (!handleObject(dictionary->value(i), false)) {
+			if (!handleObject(dictionary->value(i), false,singleLine)) {
 				return false;
 			}
 
-			if (!writeString(singleLine ? ";" : ";\n", false)) {
+			if (!writeString(singleLine ? "; " : ";\n", false)) {
 				return false;
 			}
 		}
 
 		if (!_strings || !root) {
 			_indent--;
-			if (!writeString("}", true)) {
+			if (!writeString("}", !singleLine)) {
 				return false;
 			}
 		}
@@ -707,41 +723,47 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleArray(Array const *array, bool root)
+		handleArray(Array *array, bool root, bool singleLine)
 	{
 		/* Write '('. */
-		if (!writeString("(\n", !_lastKey)) {
+		if (!writeString(singleLine?"(":"(\n", !_lastKey)) {
 			return false;
 		}
 
-		_lastKey = false;
+		_lastKey = singleLine;
 
 		_indent++;
 
 		for (size_t i = 0; i < array->count(); ++i) {
 			/* Write ',' if not first entry. */
-			if (i != 0) {
-				if (!writeString(",\n", false)) {
-					return false;
-				}
+			//if (i != 0) {
+			//	if (!writeString(",\n", false)) {
+			//		return false;
+			//	}
+			//}
+
+			if (!handleObject(array->value(i), false,singleLine)) {
+				return false;
 			}
 
-			if (!handleObject(array->value(i), false)) {
+			if (!writeString(singleLine?", ": ",\n", false)) {
 				return false;
 			}
 		}
 
 		/* Write ')'. */
-		if (!writeString("\n", false)) {
-			return false;
-		}
+		//if (!singleLine) {
+		//	if (!writeString("\n", false)) {
+		//		return false;
+		//	}
+		//}
 
 		_indent--;
-		return writeString(")", true);
+		return writeString(")", !singleLine);
 	}
 
 	bool PbxWriter::
-		handleBoolean(Boolean const *boolean, bool root)
+		handleBoolean(Boolean *boolean, bool root)
 	{
 		if (!writeString(boolean->value() ? "YES" : "NO", !_lastKey)) {
 			return false;
@@ -752,7 +774,7 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleString(String const *string, bool root)
+		handleString(String *string, bool root)
 	{
 		if (!writeEscapedString(string->value(), !_lastKey)) {
 			return false;
@@ -768,7 +790,7 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleData(Data const *data, bool root)
+		handleData(Data *data, bool root)
 	{
 		if (!writeString("<", !_lastKey)) {
 			return false;
@@ -792,7 +814,7 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleReal(Real const *real, bool root)
+		handleReal(Real *real, bool root)
 	{
 		char buf[64];
 		int rc = snprintf(buf, sizeof(buf), "%g", real->value());
@@ -809,7 +831,7 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleInteger(Integer const *integer, bool root)
+		handleInteger(Integer *integer, bool root)
 	{
 		int               rc;
 		char              buf[32];
@@ -828,7 +850,7 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleDate(Date const *date, bool root)
+		handleDate(Date *date, bool root)
 	{
 		if (!writeEscapedString(date->stringValue(), !_lastKey)) {
 			return false;
@@ -839,7 +861,7 @@ namespace pbxproj {
 	}
 
 	bool PbxWriter::
-		handleUID(UID const *uid, bool root)
+		handleUID(UID *uid, bool root)
 	{
 		/* Write a CF$UID dictionary. */
 		std::unique_ptr<Dictionary> dictionary = Dictionary::New();

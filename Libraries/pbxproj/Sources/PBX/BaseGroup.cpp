@@ -107,7 +107,7 @@ BaseGroup::toPlist()
 	auto children = plist::Array::New();
 
 	for (auto it : _children) {
-		children->append(plist::String::New(it->uuid()+it->wrapAnnotation()));
+		children->append(plist::String::New(it->uuid(),it->annotation()));
 	}
 
 	dict->set("children", std::move(children));

@@ -98,7 +98,37 @@ std::unique_ptr<plist::Dictionary>
 BuildFile::toPlist()
 {
 	auto dict = Object::toPlist();
-	dict->set("fileRef", plist::String::New(_fileRef->uuid()));
+	dict->set("fileRef", plist::String::New(_fileRef->uuid(),_fileRef->annotation()));
+
+	if (_compilerFlags.size() || _attributes.size()) {
+		auto settings = plist::Dictionary::New();
+
+		if (_compilerFlags.size()==1) {
+			settings->set("COMPILER_FLAGS", plist::String::New(_compilerFlags[0]));
+		}
+		else if(_compilerFlags.size()>1)
+		{
+			auto compilerFlags = plist::Array::New();
+			for (std::string flag : _compilerFlags) 
+			{
+				compilerFlags->append(plist::String::New(flag));
+			}
+			settings->set("COMPILER_FLAGS", std::move(compilerFlags));
+		}
+
+		if(_attributes.size()>0)
+		{
+			auto attributes = plist::Array::New();
+			for (std::string attr : _attributes)
+			{
+				attributes->append(plist::String::New(attr));
+			}
+			settings->set("ATTRIBUTES", std::move(attributes));
+		}
+
+		dict->set("settings", std::move(settings));
+	}
+
 	return dict;
 }
 

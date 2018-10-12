@@ -84,10 +84,13 @@ BuildPhase::toPlist()
 		fileIds->append(plist::String::New(it->uuid(),it->annotation()));
 	}
 
-	dict->set("name", plist::String::New(_name));
+	if (!_name.empty()) {
+		dict->set("name", plist::String::New(_name));
+	}
+
 	dict->set("files",std::move(fileIds));
-	dict->set("runOnlyForDeploymentPostprocessing", plist::String::New(_name));
-	dict->set("buildActionMask", plist::String::New(_name));
+	dict->set("runOnlyForDeploymentPostprocessing", plist::Integer::New(_runOnlyForDeploymentPostprocessing));
+	dict->set("buildActionMask", plist::Integer::New(_buildActionMask));
 
 	return dict;
 }

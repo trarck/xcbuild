@@ -88,7 +88,15 @@ std::unique_ptr<plist::Object>
 Value::toPlist() const
 {
 	if (_entries.size() == 1) {
-		return plist::String::New(*(_entries[0].string()));
+		switch (_entries[0].type()) {
+			case Value::Entry::Type::String: {
+				return plist::String::New(*(_entries[0].string()));
+				break;
+			}
+			case Value::Entry::Type::Value: {
+				return _entries[0].value()->toPlist();
+			}
+		}
 	}
 	else if(_entries.size()>1){
 		auto values = plist::Array::New();
@@ -109,7 +117,7 @@ Value::toPlist() const
 	}
 	else
 	{
-		return nullptr;
+		return plist::String::New();;
 	}
 }
 

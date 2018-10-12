@@ -71,6 +71,9 @@ std::unique_ptr<plist::Dictionary> ContainerItemProxy::toPlist()
 {
 	auto dict = Object::toPlist();
 
+	if (_containerPortal) {
+		dict->set("containerPortal", plist::String::New(_containerPortal->uuid(), _containerPortal->annotation()));
+	}
 	dict->set("proxyType", plist::Integer::New(_proxyType));
 	dict->set("remoteGlobalIDString", plist::String::New(_remoteGlobalIDString));
 	dict->set("remoteInfo", plist::String::New(_remoteInfo));

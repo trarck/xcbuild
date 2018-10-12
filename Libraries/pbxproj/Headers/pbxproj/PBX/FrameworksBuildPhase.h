@@ -22,6 +22,7 @@ public:
     FrameworksBuildPhase();
 
 public:
+	std::string displayName() override;
     static inline char const *Isa()
     { return ISA::PBXFrameworksBuildPhase; }
 };

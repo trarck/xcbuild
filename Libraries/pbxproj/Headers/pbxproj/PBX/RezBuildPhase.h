@@ -20,7 +20,8 @@ public:
 
 public:
     RezBuildPhase();
-
+public:
+	std::string displayName() override;
 public:
     static inline char const *Isa()
     { return ISA::PBXRezBuildPhase; }
