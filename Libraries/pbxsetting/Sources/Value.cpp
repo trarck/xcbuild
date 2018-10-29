@@ -94,7 +94,7 @@ Value::toPlist() const
 				break;
 			}
 			case Value::Entry::Type::Value: {
-				return _entries[0].value()->toPlist();
+				return plist::String::New(raw());
 			}
 		}
 	}
@@ -262,6 +262,16 @@ Parse(std::string const &value)
 }
 
 Value Value::
+Parse(std::vector<std::string> &value)
+{
+	std::vector<Value::Entry> entries;
+	for (std::string const &entry : value) {
+		entries.push_back(Value::Entry(Type::FormatString(entry)));
+	}
+	return entries;
+}
+
+Value Value::
 String(std::string const &value)
 {
     if (value.empty()) {
@@ -289,7 +299,8 @@ FromObject(plist::Object const *object)
     if (object == nullptr) {
         return pbxsetting::Value::Empty();
     } else if (plist::String const *stringValue = plist::CastTo <plist::String> (object)) {
-        return pbxsetting::Value::Parse(stringValue->value());
+        //return pbxsetting::Value::Parse(stringValue->value());
+		return pbxsetting::Value::String(Type::FormatString(stringValue->value()));
     } else if (plist::Boolean const *booleanValue = plist::CastTo <plist::Boolean> (object)) {
         return pbxsetting::Value::String(Type::FormatBoolean(booleanValue->value()));
     } else if (plist::Integer const *integerValue = plist::CastTo <plist::Integer> (object)) {
@@ -304,7 +315,8 @@ FromObject(plist::Object const *object)
                 values.insert(values.end(), parsed.begin(), parsed.end());
             }
         }
-        return pbxsetting::Value::Parse(Type::FormatList(values));
+        //return pbxsetting::Value::Parse(Type::FormatList(values));
+		return pbxsetting::Value::Parse(values);
     } else {
         // TODO(grp): Handle additional types?
         fprintf(stderr, "Warning: Unknown value type for object.\n");

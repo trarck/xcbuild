@@ -13,6 +13,7 @@
 #include <plist/Boolean.h>
 #include <plist/Dictionary.h>
 #include <plist/String.h>
+#include <plist/Integer.h>
 #include <plist/Keys/Unpack.h>
 
 #include <cassert>
@@ -79,7 +80,7 @@ std::unique_ptr<plist::Dictionary> ConfigurationList::toPlist()
 	}
 
 	dict->set("defaultConfigurationName", plist::String::New(_defaultConfigurationName));
-	dict->set("defaultConfigurationIsVisible", plist::Boolean::New(_defaultConfigurationIsVisible));
+	dict->set("defaultConfigurationIsVisible", plist::Integer::New(_defaultConfigurationIsVisible));
 	dict->set("buildConfigurations", std::move(buildConfs));
 
 	return dict;

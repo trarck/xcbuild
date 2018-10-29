@@ -66,6 +66,8 @@ public:
     static std::string
     FormatReal(double value);
 
+	static std::string
+	FormatString(std::string const &value);
     /*
      * Formats a space-separated list of strings (or path names) for a setting
      * value. Quoting is used to escape strings to keep the list structure.

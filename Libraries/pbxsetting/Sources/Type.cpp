@@ -106,6 +106,22 @@ FormatReal(double value)
 }
 
 std::string Type::
+FormatString(std::string const &value)
+{
+	std::ostringstream result;
+	for (char c : value) {
+		if (c == '\\' || c == '\'' || c == '"') {
+			result << '\\' << c;
+		}
+		else {
+			result << c;
+		}
+	}
+
+	return result.str();
+}
+
+std::string Type::
 FormatList(std::vector<std::string> const &value)
 {
     std::ostringstream result;

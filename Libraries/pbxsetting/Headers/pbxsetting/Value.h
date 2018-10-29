@@ -127,6 +127,9 @@ public:
     static Value
     Parse(std::string const &value);
 
+	static Value
+	Parse(std::vector<std::string> &value);
+
     /*
      * Creates a value from the string representation of a property list.
      * Only certain string-convertible property lists types are supported.

@@ -162,6 +162,10 @@ namespace pbxproj {
 			_indent--;
 		}
 
+		if (!writeString("};\n", true)) {
+			return false;
+		}
+
 		writePair("rootObject", pbxProj->rootObject()->uuid(), pbxProj->rootObject()->annotation());
 
 		if (!_strings || !pbxProj) {
