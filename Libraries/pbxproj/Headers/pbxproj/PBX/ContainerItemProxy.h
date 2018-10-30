@@ -19,7 +19,7 @@ public:
     typedef std::shared_ptr <ContainerItemProxy> shared_ptr;
 
 private:
-    FileReference::shared_ptr _containerPortal;
+    Object::shared_ptr _containerPortal;
     uint32_t                  _proxyType;
     std::string               _remoteGlobalIDString;
     std::string               _remoteInfo;
@@ -28,7 +28,7 @@ public:
     ContainerItemProxy();
 
 public:
-    inline FileReference::shared_ptr const &containerPortal() const
+    inline Object::shared_ptr const &containerPortal() const
     { return _containerPortal; }
 
 public:

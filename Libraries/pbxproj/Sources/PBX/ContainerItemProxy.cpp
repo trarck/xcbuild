@@ -9,6 +9,7 @@
 
 #include <pbxproj/PBX/ContainerItemProxy.h>
 #include <pbxproj/Context.h>
+#include <pbxproj/PBX/Project.h>
 #include <plist/Integer.h>
 #include <plist/String.h>
 #include <plist/Keys/Unpack.h>
@@ -33,8 +34,7 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
     std::string CPID;
 
     auto unpack = plist::Keys::Unpack("ContainerItemProxy", dict, seen);
-
-    auto CP   = context.indirect <FileReference> (&unpack, "containerPortal", &CPID);
+	
     auto PT   = unpack.coerce <plist::Integer> ("proxyType");
     auto RGIS = unpack.cast <plist::String> ("remoteGlobalIDString");
     auto RI   = unpack.cast <plist::String> ("remoteInfo");
@@ -43,14 +43,26 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
         fprintf(stderr, "%s", unpack.errorText().c_str());
     }
 
+	auto CP = context.indirect <FileReference>(&unpack, "containerPortal", &CPID);
     if (CP != nullptr) {
-        auto portal = context.parseObject(context.fileReferences, CPID, CP);
+        auto portal = context.parseObject<FileReference>(context.fileReferences, CPID, CP);
         if (!portal) {
             return false;
         }
 
         _containerPortal = portal;
     }
+	else
+	{
+		CP = context.indirect<Project>(&unpack, "containerPortal", &CPID);
+		if (CP != nullptr) {
+			auto portal = context.parseObject<Project>(context.projects, CPID, CP);
+			if (!portal) {
+				return false;
+			}
+			_containerPortal = portal;
+		}
+	}
 
     if (PT != nullptr) {
         _proxyType = PT->value();
