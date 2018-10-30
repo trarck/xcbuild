@@ -16,6 +16,52 @@
 using pbxproj::XC::BuildConfiguration;
 using pbxproj::Context;
 
+std::vector<std::string> ARRAY_SETTINGS = { 
+	"ALTERNATE_PERMISSIONS_FILES",
+	"ARCHS",
+	"BUILD_VARIANTS",
+	"EXCLUDED_SOURCE_FILE_NAMES",
+	"FRAMEWORK_SEARCH_PATHS",
+	"GCC_PREPROCESSOR_DEFINITIONS",
+	"GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS",
+	"HEADER_SEARCH_PATHS",
+	"INFOPLIST_PREPROCESSOR_DEFINITIONS",
+	"LIBRARY_SEARCH_PATHS",
+	"OTHER_CFLAGS",
+	"OTHER_CPLUSPLUSFLAGS",
+	"OTHER_LDFLAGS",
+	"REZ_SEARCH_PATHS",
+	"SECTORDER_FLAGS",
+	"WARNING_CFLAGS",
+	"WARNING_LDFLAGS "
+};
+
+std::vector<std::string> ARRAY_SETTINGS_50 = {
+	"ALTERNATE_PERMISSIONS_FILES",
+	"ARCHS",
+	"BUILD_VARIANTS",
+	"EXCLUDED_SOURCE_FILE_NAMES",
+	"FRAMEWORK_SEARCH_PATHS",
+	"GCC_PREPROCESSOR_DEFINITIONS",
+	"GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS",
+	"HEADER_SEARCH_PATHS",
+	"INCLUDED_SOURCE_FILE_NAMES",
+	"INFOPLIST_PREPROCESSOR_DEFINITIONS",
+	"LD_RUNPATH_SEARCH_PATHS",
+	"LIBRARY_SEARCH_PATHS",
+	"LOCALIZED_STRING_MACRO_NAMES",
+	"OTHER_CFLAGS",
+	"OTHER_CPLUSPLUSFLAGS",
+	"OTHER_LDFLAGS",
+	"REZ_SEARCH_PATHS",
+	"SECTORDER_FLAGS",
+	"SYSTEM_FRAMEWORK_SEARCH_PATHS",
+	"SYSTEM_HEADER_SEARCH_PATHS",
+	"USER_HEADER_SEARCH_PATHS",
+	"WARNING_CFLAGS",
+	"WARNING_LDFLAGS"
+};
+
 BuildConfiguration::
 BuildConfiguration() :
     Object        (Isa()),
@@ -58,7 +104,17 @@ parse(Context &context, plist::Dictionary const *dict, std::unordered_set<std::s
         for (size_t n = 0; n < BS->count(); n++) {
             auto BSk = BS->key(n);
             auto BSv = BS->value(BSk);
-            pbxsetting::Setting setting = pbxsetting::Setting::Create(BSk, pbxsetting::Value::FromObject(BSv));
+
+			bool isArray = false;
+			for (std::string iter : ARRAY_SETTINGS)
+			{
+				if (iter == BSk) {
+					isArray = true;
+					break;
+				}
+			}
+
+            pbxsetting::Setting setting = pbxsetting::Setting::Create(BSk, pbxsetting::Value::FromObject(BSv,isArray));
             settings.push_back(setting);
         }
         _buildSettings = pbxsetting::Level(settings);

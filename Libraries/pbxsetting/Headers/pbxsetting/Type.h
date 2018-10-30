@@ -45,7 +45,7 @@ public:
      * can be used to escape spaces in strings, and backslashes to escape quotes.
      */
     static std::vector<std::string>
-    ParseList(std::string const &value);
+    ParseList(std::string const &value,bool keepQuote=false);
 
 public:
     /*

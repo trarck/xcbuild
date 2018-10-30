@@ -40,41 +40,100 @@ ParseInteger(std::string const &value)
 }
 
 std::vector<std::string> Type::
-ParseList(std::string const &value)
+ParseList(std::string const &value,bool keepQuote)
 {
     std::vector<std::string> entries;
 
     std::string str;
     char quote = '\0';
     bool escaped = false;
+	bool isPath = false;
+	int index = -1;
+	std::vector<std::string> tempSpaces;
+	bool justQuoteEnd = false;
 
     for (char c : value) {
-        if (!escaped) {
+		++index;
+		if (!escaped) {
             if (c == '\'' || c == '"') {
                 if (quote != '\0') {
                     if (c == quote) {
                         quote = '\0';
-                        continue;
+						justQuoteEnd = true;
+						if (!keepQuote) {
+							continue;
+						}                        
                     }
                 } else {
+					
                     quote = c;
-                    continue;
+					isPath = false;
+					if (tempSpaces.size()) {
+						for (const std::string s : tempSpaces) {
+							entries.push_back(s);
+						}
+						tempSpaces.clear();
+					}
+					justQuoteEnd = false;
+					if (!keepQuote) {
+						continue;
+					}
                 }
-            } else if (c == '\\') {
-                escaped = true;
-                continue;
-            } else if (quote == '\0' && isspace(c)) {
-                if (!str.empty()) {
-                    entries.push_back(str);
-                    str = std::string();
-                }
-                continue;
-            }
+			}
+			else if (c == '\\') {
+				escaped = true;
+				justQuoteEnd = false;
+				continue;
+			}
+			else if (quote == '\0' && c == '/')
+			{
+				isPath = true;
+				justQuoteEnd = false;
+
+				if (tempSpaces.size()) {
+					std::string spaceString = "";
+					for (const std::string s : tempSpaces) {
+						spaceString += s + " ";
+					}
+					tempSpaces.clear();
+					str = spaceString + str;
+				}				
+            } 
+			else if (quote == '\0' && isspace(c)) {		
+				if (justQuoteEnd) {
+					if (!str.empty()) {
+						entries.push_back(str);
+						str = std::string();
+					}
+
+					justQuoteEnd = false;
+					continue;
+				}
+				else if (!isPath) 
+				{
+					if (!str.empty()) {
+						tempSpaces.push_back(str);
+						str = std::string();
+					}
+
+					justQuoteEnd = false;
+					continue;
+				}
+
+
+			}
         }
 
         str += c;
         escaped = false;
     }
+
+	if (tempSpaces.size()) {
+		for (const std::string s : tempSpaces) {
+			entries.push_back(s);
+		}
+		tempSpaces.clear();
+	}
 
     if (!str.empty()) {
         entries.push_back(str);

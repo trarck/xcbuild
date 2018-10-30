@@ -135,7 +135,7 @@ public:
      * Only certain string-convertible property lists types are supported.
      */
     static Value
-    FromObject(plist::Object const *object);
+    FromObject(plist::Object const *object,bool isArray=false);
 };
 
 }

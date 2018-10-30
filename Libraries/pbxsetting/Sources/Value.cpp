@@ -258,7 +258,9 @@ ParseValue(std::string const &value, size_t from, ValueDelimiter end = kDelimite
 Value Value::
 Parse(std::string const &value)
 {
-    return ParseValue(value, 0).value;
+    //return ParseValue(value, 0).value;
+	std::vector<std::string> values = Type::ParseList(value,true);
+	return Parse(values);
 }
 
 Value Value::
@@ -266,7 +268,7 @@ Parse(std::vector<std::string> &value)
 {
 	std::vector<Value::Entry> entries;
 	for (std::string const &entry : value) {
-		entries.push_back(Value::Entry(Type::FormatString(entry)));
+		entries.push_back(Value::Entry(entry));
 	}
 	return entries;
 }
@@ -294,13 +296,19 @@ Variable(std::string const &value)
 }
 
 Value Value::
-FromObject(plist::Object const *object)
+FromObject(plist::Object const *object, bool isArray)
 {
     if (object == nullptr) {
         return pbxsetting::Value::Empty();
     } else if (plist::String const *stringValue = plist::CastTo <plist::String> (object)) {
-        //return pbxsetting::Value::Parse(stringValue->value());
-		return pbxsetting::Value::String(Type::FormatString(stringValue->value()));
+		if (isArray) 
+		{
+			return pbxsetting::Value::Parse(stringValue->value());
+		}
+		else
+		{
+			return pbxsetting::Value::String(stringValue->value());
+		}	
     } else if (plist::Boolean const *booleanValue = plist::CastTo <plist::Boolean> (object)) {
         return pbxsetting::Value::String(Type::FormatBoolean(booleanValue->value()));
     } else if (plist::Integer const *integerValue = plist::CastTo <plist::Integer> (object)) {
@@ -311,7 +319,7 @@ FromObject(plist::Object const *object)
         std::vector<std::string> values;
         for (size_t n = 0; n < arrayValue->count(); n++) {
             if (auto arg = arrayValue->value <plist::String> (n)) {
-                std::vector<std::string> parsed = Type::ParseList(arg->value());
+                std::vector<std::string> parsed = Type::ParseList(arg->value(),true);
                 values.insert(values.end(), parsed.begin(), parsed.end());
             }
         }

@@ -77,7 +77,12 @@ std::unique_ptr<plist::Dictionary>
 TargetDependency::toPlist()
 {
 	auto dict = Object::toPlist();
-	dict->set("name", plist::String::New(_name));
+
+	if (!_name.empty()) {
+
+		dict->set("name", plist::String::New(_name));
+	}
+
 	if (_targetProxy) {
 		dict->set("targetProxy", plist::String::New(_targetProxy->uuid(),_targetProxy->annotation()));
 	}
