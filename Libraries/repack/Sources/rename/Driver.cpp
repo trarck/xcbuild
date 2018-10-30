@@ -134,7 +134,7 @@ run(process::Context const *processContext, libutil::Filesystem *filesystem)
 
 	printf("open project ok");
 
-	renameProductName(filesystem, project, *options.target());
+	//renameProductName(filesystem, project, *options.target());
 
 	project->save(filesystem,"");
 
